@@ -5,8 +5,8 @@ CONFIG_FILE="gamefrag.conf"
 GAMEFRAG_DAEMON="/usr/local/bin/gamefragd"
 GAMEFRAG_CLI="/usr/local/bin/gamefrag-cli"
 GAMEFRAG_REPO="https://github.com/Game-Frag/game-frag-coin.git"
-GAMEFRAG_PARAMS="https://github.com/Game-Frag/game-frag-coin/releases/download/v5.2.0.1/util.zip"
-GAMEFRAG_LATEST_RELEASE="https://github.com/Game-Frag/game-frag-coin/releases/download/v5.2.0.1/gamefrag-5.2.0.1-ubuntu18-daemon.zip"
+GAMEFRAG_PARAMS="https://github.com/Game-Frag/game-frag-coin/releases/download/v5.4.0/util.zip"
+GAMEFRAG_LATEST_RELEASE="https://github.com/Game-Frag/game-frag-coin/releases/download/v5.4.0/gamefrag-5.4.0-ubuntu18-daemon.zip"
 COIN_BOOTSTRAP='https://bootstrap.gamefrag.com/boot_strap.tar.gz'
 COIN_ZIP=$(echo $GAMEFRAG_LATEST_RELEASE | awk -F'/' '{print $NF}')
 COIN_CHAIN=$(echo $COIN_BOOTSTRAP | awk -F'/' '{print $NF}')
@@ -112,7 +112,7 @@ if [ "$?" -gt "0" ];
     echo "apt-get update"
     echo "apt-get -y upgrade"
     echo "apt -y install software-properties-common"
-    echo "apt-add-repository -y ppa:bitcoin/bitcoin"
+    echo "apt-add-repository -y ppa:pivx/pivx"
     echo "apt-get update"
     echo "apt install -y git make build-essential libtool bsdmainutils autotools-dev autoconf pkg-config automake python3 libssl-dev libgmp-dev libevent-dev libboost-all-dev libdb4.8-dev libdb4.8++-dev unzip"
     exit 1
@@ -164,7 +164,7 @@ clear
 function copy_gamefrag_binaries(){
    cd /root
   wget $GAMEFRAG_LATEST_RELEASE
-  unzip gamefrag-5.2.0.1-ubuntu18-daemon.zip
+  unzip gamefrag-5.4.0-ubuntu18-daemon.zip
   cp gamefrag-cli gamefragd gamefrag-tx /usr/local/bin >/dev/null
   chmod 755 /usr/local/bin/gamefrag* >/dev/null
   clear
@@ -274,38 +274,57 @@ rpcpassword=$RPCPASSWORD
 rpcallowip=127.0.0.1
 rpcport=$DEFAULT_GAMEFRAG_RPC_PORT
 listen=1
-server=1
+server=0
 daemon=1
 port=$GAMEFRAG_PORT
-addnode=208.95.3.227:42020
-addnode=208.95.3.228:42020
-addnode=208.95.3.229:42020
-addnode=208.95.3.230:42020
-addnode=208.95.3.231:42020
-addnode=208.95.3.232:42020
-addnode=208.95.3.233:42020
-addnode=208.95.3.234:42020
-addnode=208.95.3.235:42020
-addnode=208.95.3.236:42020
-addnode=208.95.3.237:42020
-addnode=208.95.3.238:42020
-addnode=208.95.3.239:42020
-addnode=162.247.131.30:42020
-addnode=162.247.131.31:42020
-addnode=162.247.131.32:42020
-addnode=162.247.131.33:42020
-addnode=162.247.131.34:42020
-addnode=162.247.131.35:42020
-addnode=162.247.131.36:42020
-addnode=162.247.131.37:42020
-addnode=162.247.131.38:42020
-addnode=162.247.131.39:42020
-addnode=162.247.131.40:42020
-addnode=162.247.131.41:42020
-addnode=162.247.131.42:42020
-addnode=162.247.131.43:42020
-addnode=162.247.131.44:42020
-addnode=208.95.2.29:42020
+#External GameFrag IPV4
+addnode=199.127.140.224:42020
+addnode=199.127.140.225:42020
+addnode=199.127.140.228:42020
+addnode=199.127.140.231:42020
+addnode=199.127.140.233:42020
+addnode=199.127.140.235:42020
+addnode=199.127.140.236:42020
+
+#External GameFrag IPV6
+addnode=[2604:6800:5e11:3611::1]:42020
+addnode=[2604:6800:5e11:3611::2]:42020
+addnode=[2604:6800:5e11:3612::4]:42020
+addnode=[2604:6800:5e11:3613::2]:42020
+addnode=[2604:6800:5e11:3613::5]:42020
+addnode=[2604:6800:5e11:3614::1]:42020
+addnode=[2604:6800:5e11:3614::2]:42020
+addnode=[2604:6800:5e11:3614::3]:42020
+addnode=[2604:6800:5e11:3614::4]:42020
+
+#External WhiteListing IPV4
+whitelist=199.127.140.224
+whitelist=199.127.140.225
+whitelist=199.127.140.228
+whitelist=199.127.140.231
+whitelist=199.127.140.233
+whitelist=199.127.140.235
+whitelist=199.127.140.236
+
+#External WhiteListing IPV6
+whitelist=[2604:6800:5e11:3611::1]
+whitelist=[2604:6800:5e11:3611::2]
+whitelist=[2604:6800:5e11:3612::4]
+whitelist=[2604:6800:5e11:3613::2]
+whitelist=[2604:6800:5e11:3613::5]
+whitelist=[2604:6800:5e11:3614::1]
+whitelist=[2604:6800:5e11:3614::2]
+whitelist=[2604:6800:5e11:3614::3]
+whitelist=[2604:6800:5e11:3614::4]
+
+#Internal WhiteListing IPV4
+whitelist=10.36.11.1
+whitelist=10.36.11.2
+whitelist=10.36.12.4
+whitelist=10.36.13.2
+whitelist=10.36.13.5
+whitelist=10.36.14.1
+whitelist=10.36.14.2
 EOF
 }
 
