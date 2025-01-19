@@ -5,7 +5,7 @@ CONFIG_FILE="gamefrag.conf"
 GAMEFRAG_DAEMON="/usr/local/bin/gamefragd"
 GAMEFRAG_CLI="/usr/local/bin/gamefrag-cli"
 GAMEFRAG_REPO="https://github.com/Game-Frag/game-frag-coin.git"
-GAMEFRAG_LATEST_RELEASE="https://github.com/Game-Frag/game-frag-coin/releases/download/v5.4.0/gamefrag-5.4.0-ubuntu18-daemon.zip"
+GAMEFRAG_LATEST_RELEASE="https://github.com/Game-Frag/game-frag-coin/releases/download/v5.6.1/gamefrag-5.6.1-ubuntu20-daemon.zip"
 COIN_BOOTSTRAP='https://bootstrap.gamefrag.com/boot_strap.tar.gz'
 COIN_ZIP=$(echo $GAMEFRAG_LATEST_RELEASE | awk -F'/' '{print $NF}')
 COIN_CHAIN=$(echo $COIN_BOOTSTRAP | awk -F'/' '{print $NF}')
@@ -60,8 +60,8 @@ fi
 
 
 function checks() {
-if [[ $(lsb_release -d) != *18.04* ]]; then
-  echo -e "${RED}You are not running Ubuntu 18.04. Installation is cancelled.${NC}"
+if [[ $(lsb_release -d) != *20.04* ]]; then
+  echo -e "${RED}You are not running Ubuntu 20.04. Installation is cancelled.${NC}"
   exit 1
 fi
 
@@ -82,7 +82,7 @@ fi
 function copy_gamefrag_binaries(){
   cd /root
   wget $GAMEFRAG_LATEST_RELEASE
-  unzip gamefrag-5.4.0-ubuntu18-daemon.zip
+  unzip gamefrag-5.6.1-ubuntu20-daemon.zip
   cp gamefrag-cli gamefragd gamefrag-tx /usr/local/bin >/dev/null
   chmod 755 /usr/local/bin/gamefrag* >/dev/null
   clear
