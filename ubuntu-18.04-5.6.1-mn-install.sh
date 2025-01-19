@@ -162,7 +162,8 @@ clear
 }
 
 function copy_gamefrag_binaries(){
-   cd /root
+  cd /root
+  apt-get install wget -qq
   wget $GAMEFRAG_LATEST_RELEASE
   unzip gamefrag-5.6.1-ubuntu18-daemon.zip
   cp gamefrag-cli gamefragd gamefrag-tx /usr/local/bin >/dev/null
