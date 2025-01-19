@@ -81,6 +81,7 @@ fi
 
 function copy_gamefrag_binaries(){
   cd /root
+  apt-get install build-essential libtool bsdmainutils autotools-dev autoconf pkg-config automake python3 libgmp-dev libevent-dev libboost-all-dev libsodium-dev cargo libminiupnpc-dev libnatpmp-dev libzmq3-dev -y
   wget $GAMEFRAG_LATEST_RELEASE
   unzip gamefrag-5.6.1-ubuntu20-daemon.zip
   cp gamefrag-cli gamefragd gamefrag-tx /usr/local/bin >/dev/null

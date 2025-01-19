@@ -10,6 +10,9 @@ GAMEFRAG_LATEST_RELEASE="https://github.com/Game-Frag/game-frag-coin/releases/do
 COIN_BOOTSTRAP='https://bootstrap.gamefrag.com/boot_strap.tar.gz'
 COIN_ZIP=$(echo $GAMEFRAG_LATEST_RELEASE | awk -F'/' '{print $NF}')
 COIN_CHAIN=$(echo $COIN_BOOTSTRAP | awk -F'/' '{print $NF}')
+COIN_NAME='GameFrag'
+CONFIGFOLDER='.gamefrag'
+COIN_BOOTSTRAP_NAME='boot_strap.tar.gz'
 
 DEFAULT_GAMEFRAG_PORT=42020
 DEFAULT_GAMEFRAG_RPC_PORT=42021
@@ -22,30 +25,31 @@ NC='\033[0m'
 
 function download_bootstrap() {
   echo -e "${GREEN}Downloading and Installing $COIN_NAME BootStrap${NC}"
-  mkdir -p /root/tmp
-  cd /root/tmp >/dev/null 2>&1
+  mkdir -p /opt/chaintmp/
+  cd /opt/chaintmp >/dev/null 2>&1
   rm -rf boot_strap* >/dev/null 2>&1
-  wget -q $COIN_BOOTSTRAP
-  cd $CONFIGFOLDER >/dev/null 2>&1
-  rm -rf blk* database* txindex* peers.dat
-  cd /root/tmp >/dev/null 2>&1
-  tar -zxf $COIN_CHAIN /root/tmp >/dev/null 2>&1
-  cp -Rv cache/* $CONFIGFOLDER >/dev/null 2>&1
+  wget $COIN_BOOTSTRAP >/dev/null 2>&1
+  cd /home/$GAMEFRAG_USER/$CONFIGFOLDER
+  rm -rf sporks zerocoin blocks database chainstate peers.dat
+  cd /opt/chaintmp >/dev/null 2>&1
+  tar -zxf $COIN_BOOTSTRAP_NAME
+  cp -Rv cache/* /home/$GAMEFRAG_USER/$CONFIGFOLDER/ >/dev/null 2>&1
+  chown -Rv $GAMEFRAG_USER /home/$GAMEFRAG_USER/$CONFIGFOLDER >/dev/null 2>&1
   cd ~ >/dev/null 2>&1
-  rm -rf $TMP_FOLDER >/dev/null 2>&1
+  rm -rf /opt/chaintmp >/dev/null 2>&1
   clear
 }
 
 function install_params() {
-  echo -e "${GREEN}Downloading and Installing $COIN_NAME Params FIles${NC}"
-  mkdir -p /root/tmp
-  cd /root/tmp >/dev/null 2>&1
+  echo -e "${GREEN}Downloading and Installing $COIN_NAME Params Files${NC}"
+  mkdir -p /opt/tmp/
+  cd /opt/tmp
   rm -rf util* >/dev/null 2>&1
   wget -q $GAMEFRAG_PARAMS
   unzip $GAMEFRAG_PARAMS >/dev/null 2>&1
-  chmod -Rv +x util >/dev/null 2>&1
-  util/./fetch-params.sh
-  clear
+  unzip util.zip >/dev/null 2>&1
+  chmod -Rv 777 /opt/tmp/util/fetch-params.sh >/dev/null 2>&1
+  runuser -l $GAMEFRAG_USER -c '/opt/tmp/util/./fetch-params.sh' >/dev/null 2>&1
 }
 
 purgeOldInstallation() {
@@ -98,12 +102,12 @@ apt-get update >/dev/null 2>&1
 DEBIAN_FRONTEND=noninteractive apt-get update > /dev/null 2>&1
 DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y -qq upgrade >/dev/null 2>&1
 apt install -y software-properties-common >/dev/null 2>&1
-echo -e "${GREEN}Adding bitcoin PPA repository"
-apt-add-repository -y ppa:bitcoin/bitcoin >/dev/null 2>&1
+echo -e "${GREEN}Adding Pivx PPA repository"
+apt-add-repository -y ppa:pivx/berkeley-db4 >/dev/null 2>&1
 echo -e "Installing required packages, it may take some time to finish.${NC}"
 apt-get update >/dev/null 2>&1
 apt-get upgrade >/dev/null 2>&1
-apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" git make build-essential libtool bsdmainutils autotools-dev autoconf pkg-config automake python3 libssl-dev libgmp-dev libevent-dev libboost-all-dev libdb4.8-dev libdb4.8++-dev ufw fail2ban pwgen curl unzip >/dev/null 2>&1
+apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" git make build-essential libtool bsdmainutils autotools-dev autoconf pkg-config automake python3 libssl-dev libgmp-dev libevent-dev libboost-all-dev libdb4.8-dev libdb4.8++-dev ufw fail2ban pwgen curl unzip libminiupnpc-dev libnatpmp-dev libzmq3-dev >/dev/null 2>&1
 NODE_IP=$(curl -s4 icanhazip.com)
 clear
 if [ "$?" -gt "0" ];
@@ -112,9 +116,9 @@ if [ "$?" -gt "0" ];
     echo "apt-get update"
     echo "apt-get -y upgrade"
     echo "apt -y install software-properties-common"
-    echo "apt-add-repository -y ppa:pivx/pivx"
+    echo "apt-add-repository -y ppa:pivx/berkeley-db4"
     echo "apt-get update"
-    echo "apt install -y git make build-essential libtool bsdmainutils autotools-dev autoconf pkg-config automake python3 libssl-dev libgmp-dev libevent-dev libboost-all-dev libdb4.8-dev libdb4.8++-dev unzip"
+    echo "apt install -y git make build-essential libtool bsdmainutils autotools-dev autoconf pkg-config automake python3 libssl-dev libgmp-dev libevent-dev libboost-all-dev libdb4.8-dev libdb4.8++-dev unzip libminiupnpc-dev libnatpmp-dev libzmq3-dev -y"
     exit 1
 fi
 clear
@@ -369,14 +373,14 @@ function important_information() {
 }
 
 function setup_node() {
-  ask_user
+   ask_user
+  install_params
+  download_bootstrap
   check_port
   create_config
   create_key
   update_config
   enable_firewall
-  download_bootstrap
-  install_params
   systemd_gamefrag
   important_information
 }
